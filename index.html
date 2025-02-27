@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>❤ 爱的方程式 | 孟德城 ❤ 蒋佳林</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #0f0f0f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 62, 150, 0.5);
+        }
+
+        h1 {
+            font-size: 3em;
+            margin: 0;
+            background: linear-gradient(45deg, #ff3e96, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .heart {
+            color: #ff3e96;
+            font-size: 2.5em;
+            margin: 0 10px;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #ff3e96;
+            }
+            to {
+                text-shadow: 0 0 20px #ff6b6b, 0 0 30px #ff3e96;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div class="content">
+        <h1>
+            <span class="heart">❤</span>孟德城<br>
+            <span style="font-size: 0.8em">愿以星辰为聘</span><br>
+            <span class="heart">❤</span>蒋佳林<br>
+            <span style="font-size: 0.8em">许你银河为证</span>
+        </h1>
+    </div>
+
+    <script>
+        class Particle {
+            constructor(canvas, ctx) {
+                this.canvas = canvas;
+                this.ctx = ctx;
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 0.8,
+                    y: (Math.random() - 0.5) * 0.8
+                };
+                this.radius = Math.random() * 1.5;
+                this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+            }
+
+            draw() {
+                this.ctx.beginPath();
+                this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                this.ctx.fillStyle = this.color;
+                this.ctx.fill();
+            }
+
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+
+                if (this.x < 0 || this.x > this.canvas.width) this.velocity.x *= -1;
+                if (this.y < 0 || this.y > this.canvas.height) this.velocity.y *= -1;
+
+                this.draw();
+            }
+        }
+
+        // 初始化画布
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // 创建粒子
+        const particles = Array.from({ length: 150 }, () => new Particle(canvas, ctx));
+
+        // 动画循环
+        function animate() {
+            ctx.fillStyle = 'rgba(15, 15, 15, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => particle.update());
+            requestAnimationFrame(animate);
+        }
+
+        // 响应窗口变化
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // 启动动画
+        animate();
+
+        // 添加爱心点击特效
+        document.addEventListener('click', (e) => {
+            for(let i = 0; i < 5; i++) {
+                particles.push(new Particle(canvas, ctx));
+            }
+        });
+    </script>
+</body>
+</html>
